@@ -3,8 +3,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 
 const app = express();
-app.set('view engine', 'pug');
-app.set('views','views');
+app.set('view engine', 'pug'); // instead of pug you can use any name and view engine is feature of app.set()
+app.set('views','views'); // first view is feature and second one is folder
 
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');

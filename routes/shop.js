@@ -6,8 +6,8 @@ const router  = express.Router();
 
 
 router.get('/',(req, res, next) =>{
-    console.log(adminData.products);
-    res.sendFile(path.join(dirName,'views','shop.html'));
+    const products  = adminData.products;
+   res.render('shop',{prods : products, docTitle : 'Shop'}); // sending dynamic data to the shop.pug and this doctitle is for index name of page which er are passing in shop.pug file as doctitle
 });
 
 
