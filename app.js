@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 app.set('view engine', 'pug'); // instead of pug you can use any name and view engine is feature of app.set()
-app.set('views','views'); // first view is feature and second one is folder
+app.set('views','views'); // first views is feature and second one is folder name
 
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -16,7 +16,7 @@ app.use('/admin',adminData.routes);
 app.use(shopRoutes);
 
 app.use((req, res, next)=>{
-    res.status(404).sendFile(path.join(__dirname, 'views', '404.html'))
-})
+    res.status(404).render('404');
+});
 
 app.listen(3000);
