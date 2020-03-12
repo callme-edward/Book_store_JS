@@ -6,37 +6,7 @@ block styles
 
 block content
     main
-        form.product-form(action="/admin/add-product",method="POST")
-            .form-control
-                label(for="title") Title
-                input(type="text",name="title")#title
-               
-            button.btn(type="submit") Add Product 
-
-
-
-
-
-<!DOCTYPE html>
-html(lang="en")
-    head
-        meta(charset="UTF-8")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        meta(http-equiv="X-UA-Compatible", content="ie=edge")
-        title #{docTitle}
-        link(rel="stylesheet", href="/css/main.css")
-        link(rel="stylesheet", href="/css/product.css")
-    body
-        header.main-header
-            nav.main-header__nav
-                ul.main-header__item-list
-                    li.main-header__item
-                        a.active(href="/") Shop
-                    li.main-header__item
-                        a(href="/admin/add-product") Add Product
-
-        main
-            if prods.length > 0
+         if prods.length > 0
                 .grid
                     each product in prods
                         article.card.product-item
@@ -50,5 +20,7 @@ html(lang="en")
                                 .card__actions
                                     buttions.btn Add to Cart
 
-            else
-                h1 No Products                                                
+         else
+            h1 No Products
+
+
