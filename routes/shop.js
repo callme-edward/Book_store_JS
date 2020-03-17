@@ -1,22 +1,9 @@
 const express = require('express');
-const path = require('path');
-const dirName = require('../utils/path');
-const adminData = require('./admin')
 const router  = express.Router();
+const productsController = require('../controllers/products');
 
 
-router.get('/',(req, res, next) =>{
-   const products  = adminData.products;
-   res.render('shop',{
-       prods : products,
-        pageTitle : 'Shop',
-         path : '/', 
-         hasProducts:products.length>0,
-         activeShop: true,
-         productCss: true
-        }
-    ); // sending dynamic data to the shop.pug and this doctitle is for index name of page which er are passing in shop.pug file as doctitle
-});
+router.get('/',productsController.getProduct);
 
 
 module.exports = router;

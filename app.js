@@ -3,32 +3,23 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const expressHbs = require('express-handlebars');
 
+const errorController = require('./controllers/error');
+
 const app = express();
 
-app.engine('hbs', expressHbs(
-    {
-        extname:"hbs",
-        defaultLayout:'main-layout',
-        layoutsDir:"views/layouts/"
-    }
-  )
-);
-app.set('view engine','hbs'); // instead of pug you can use any name and view engine is feature of app.set()
+app.set('view engine','ejs'); // instead of pug you can use any name and view engine is feature of app.set()
 app.set('views','views'); // first views is feature and second one is folder name
 
-const adminData = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 app.use(bodyParser.urlencoded({extended : false}));
 app.use(express.static(path.join(__dirname,'public')));
 
-app.use('/admin',adminData.routes);
+app.use('/admin',adminRoutes);
 app.use(shopRoutes);
 
 
+app.use(errorController.get404);
 
-app.use((req, res, next)=>{
-    res.status(404).render('404', {pageTitle:'Page Not Found'});
-});
-
-app.listen(3000);
+app.listen(3001);
