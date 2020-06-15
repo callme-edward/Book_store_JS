@@ -3,16 +3,22 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-// const mongoConnect = require('./util/database').mongoConnect;
-const User = require('./models/user');
+const session = require('express-session');
+const MOngoDBStore = require('connect-mongodb-session')(session);
 
 const errorController = require('./controllers/error');
+const User = require('./models/user');
+
+const MONGODB_URI = 'mongodb+srv://Rahul:c4kGW0Ya93qIzCe2@cluster0-ac12h.mongodb.net/test';
 
 const app = express();
+const store = new MOngoDBStore({
+    uri : MONGODB_URI,
+    collection: 'sessions'
+});
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
-
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
@@ -20,20 +26,27 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(
+    session(
+        {
+            secret:'my secret',
+             resave: false,
+              saveUninitialized: false,
+               store: store
+            })
+    );
 
-// you should create a user manually in db then try to find it or u can do so down while connecting to db 
-// app.use((req, res, next) =>{
-//     User.findById('sfkoie5kje5')
-//     .then(user =>{
-//         req.user = user;
-//         next();
-//     })
-//     .catch(err =>{
-//         console.log(err);
-//     });
-// });
-
-
+app.use((req, res, next) => {
+    if(!req.session.user){
+        return next();
+    }
+    User.findById(req.session.user._id)
+        .then(user => {
+            req.user = user;
+            next();
+        })
+        .catch(err => console.log(err));
+});
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -41,35 +54,30 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 
-// mongoose
-//     .connect('mongodb+srv://Rahul:c4kGW0Ya93qIzCe2@cluster0-ac12h.mongodb.net/shop?retryWrites=true&w=majority')
-//     .then(result => {
-//         User.findOne().then(user => {
-//             if (!user) {
-//                 const user = new User({
-//                     name: 'Rahul',
-//                     email: 'rahul@test.com',
-//                     cart: {
-//                         items: []
-//                     }
-//                 });
-//                 user.save();
-//             }
-//         });
-//         app.listen("Server listening on port: ", 3000);
-//     })
-//     .catch(err => {
-//         console.log("error aa gyi yrr: ", err);
-//     })
+mongoose
+  .connect(
+        MONGODB_URI
+    )
+  .then(result => {
+    User.findOne().then(user => {
+      if (!user) {
+        const user = new User({
+          name: 'Max',
+          email: 'max@test.com',
+          cart: {
+            items: []
+          }
+        });
+        user.save();
+      }
+    });
+    app.listen(3000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
-app.listen(3001);
-
-
-
-
-
-
-
+// app.listen(3000);
 
 
 
@@ -84,9 +92,6 @@ app.listen(3001);
 // const Order = require('./models/order');
 // const OrderItem = require('./models/order-item');
 // const mongoConnect  = require('./util/database').mongoConnect;
-
-
-
 
 
 
@@ -123,14 +128,6 @@ app.listen(3001);
 // .catch(err =>{
 //     console.log(err);
 // })
-
-
-
-
-
-
-
-
 
 
 
